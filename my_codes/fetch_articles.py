@@ -10,7 +10,7 @@ import os
 
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 
-# ネットワークエラーに耐えるようにfetch_articlesを修正
+# 単一のクエリに対して，指定した数の記事を取得
 def fetch_articles(query, size=1, start=0, max_retries=3, backoff_factor=1):
     base_url = "https://note.com/api/v3/searches"
     params = {
@@ -47,10 +47,7 @@ def fetch_articles(query, size=1, start=0, max_retries=3, backoff_factor=1):
             print(f"An unexpected error occurred: {e}")
             return f"An unexpected error occurred: {e}"
 
-# fetch_multiple_batches関数には変更は不要ですが、fetch_articles関数を呼び出すときに
-# max_retriesとbackoff_factorパラメータを渡すようにする必要があります。
-# 以下の関数は例外処理を含まず、返されたエラーメッセージに基づいて処理を決定します。
-
+# 複数のバッチを指定して，任意の数のデータを取得
 def fetch_multiple_batches(query, size=1, batches=1, interval=1):
     '''バッチ数を指定して，任意の数のデータを取得する．取得できるデータがなくなったら終了．'''
     all_articles = []
@@ -67,7 +64,7 @@ def fetch_multiple_batches(query, size=1, batches=1, interval=1):
         contents = notes_data.get('contents', [])
         all_articles.extend(contents)
         
-        if not contents:  # Break the loop if no contents are returned to avoid infinite loop
+        if not contents:  # 返されるコンテンツがない場合はループを抜ける
             break
 
         if i < batches - 1:
@@ -76,11 +73,7 @@ def fetch_multiple_batches(query, size=1, batches=1, interval=1):
     
     return all_articles
 
-# この修正された関数を使用するには、requestsモジュールが必要です。
-# この環境では実際のネットワークリクエストを実行することはできませんが、
-# 実際の環境であればこのコードは期待通り動作します。
-
-
+# データフレームに変換
 def extract_data_to_dataframe(all_articles):
     # 各データ要素を抽出
     id_list = [item['id'] for item in all_articles]
@@ -108,6 +101,7 @@ def extract_data_to_dataframe(all_articles):
 
     return df
 
+# クエリ検索では全文取得でいないため，クエリ検索取得したkeyから全文取得する
 def fetch_articles_by_keys(data,interval=1):
     '''全文取得をするために，keyから読み込む'''
     keys = list(data['key'])
