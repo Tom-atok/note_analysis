@@ -1,1 +1,37 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pyi
+*.pyz
+*.pyw
+*.pyz/
+*.pyw/
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Data files
+data/
+*.csv
+*.xlsx
+*.xls
+*.json
+
+# Virtual environment
+venv/
+env/
 .venv/
+.venv*/
+
+# Miscellaneous
+.DS_Store
+.idea/
+.vscode/
