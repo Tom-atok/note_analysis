@@ -2,3 +2,9 @@ requests
 pandas
 json
 os
+bs4
+pickle
+re
+numpy
+mecab-python3
+unidic-lite
