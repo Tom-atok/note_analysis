@@ -21,10 +21,6 @@ build/
 
 # Data files
 data/
-*.csv
-*.xlsx
-*.xls
-*.json
 
 # Virtual environment
 .venv/
