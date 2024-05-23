@@ -2,6 +2,7 @@
 *.pyc
 __pycache__/
 *.pyo
+__pycache__/*.pyo
 *.pyd
 *.pyi
 *.pyz
@@ -26,12 +27,24 @@ data/
 *.json
 
 # Virtual environment
-venv/
-env/
 .venv/
-.venv*/
+
+# IDE
+.vscode/
+.idea/
+
+# Compiled files
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
+*.exe
+
+# Logs
+*.log
+*.log.*
+logs/
 
 # Miscellaneous
 .DS_Store
-.idea/
-.vscode/
