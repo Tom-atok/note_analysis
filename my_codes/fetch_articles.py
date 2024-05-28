@@ -237,6 +237,38 @@ def select_columns(user_df):
     return selected_df_adduserinfo
 
 #######
+# クエリデータの操作に関わる
+#######
+def add_query_keys(df, query_key_path='data/query_key.csv'):
+    """
+    この関数は、与えられたDataFrameから 'key' 列を 'query_key.csv' という名前のCSVファイルに追加します。
+    ファイルが既に存在する場合、'key' 列は既存のファイルに追加されます。
+    
+    パラメーター:
+    - df: DataFrame - 'key' 列をCSVファイルに追加するためのDataFrame
+    
+    返り値: None
+    """
+    if not os.path.exists(query_key_path):
+        df['key'].to_csv(query_key_path, index=False)
+    else:
+        with open(query_key_path, 'a') as f:
+            df['key'].to_csv(f, header=False, index=False)
+    
+def load_query_keys(query_key_path='data/query_key.csv'):
+    """
+    この関数は、'query_key.csv' ファイルから 'key' 列を読み込み、それを返します。
+    ファイルが存在しない場合、空のDataFrameが返されます。
+    
+    返り値: DataFrame - 'key' 列を含むDataFrame
+    """
+    if os.path.exists(query_key_path):
+        return pd.read_csv(query_key_path)
+    else:
+        return pd.DataFrame()
+
+
+#######
 # main関数
 #######
 def main(query, size=50, batches = 10000, interval=1, query_keys=None):
