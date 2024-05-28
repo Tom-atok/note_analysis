@@ -246,6 +246,7 @@ def add_query_keys(df, query_key_path='data/query_key.csv'):
     
     パラメーター:
     - df: DataFrame - 'key' 列をCSVファイルに追加するためのDataFrame
+    - query_key_path: str - 'key' 列を追加するCSVファイルのパス
     
     返り値: None
     """
@@ -260,6 +261,9 @@ def load_query_keys(query_key_path='data/query_key.csv'):
     この関数は、'query_key.csv' ファイルから 'key' 列を読み込み、それを返します。
     ファイルが存在しない場合、空のDataFrameが返されます。
     
+    パラメーター:
+    - query_key_path: str - 'key' 列を読み込むCSVファイルのパス
+
     返り値: DataFrame - 'key' 列を含むDataFrame
     """
     if os.path.exists(query_key_path):
@@ -290,6 +294,14 @@ def main(query, size=50, batches = 10000, interval=1, query_keys=None):
     query_df = extract_data_to_dataframe(query_all)
     query_df.to_csv(f'data/{query}/{query}_fetchtd_df.csv')
 
+    # query keysの読み込み
+    loaded_query_keys = load_query_keys()
+    print(f'query keys has loaded!')
+
+    # query_dfからload_query_keysに含まれていないものを抽出
+    query_df = query_df[~query_df['key'].isin(loaded_query_keys['key'])]
+    print(f'query keys has extracted!')
+
     # queryごとの全文記事全件取得, デフォルトでは動かない
     if query_keys:
         query_keys_all = fetch_articles_by_keys(data=query_all,interval=interval)
@@ -310,6 +322,9 @@ def main(query, size=50, batches = 10000, interval=1, query_keys=None):
 
     print(f'selected all user data has saved!')
 
+    add_query_keys(selected_all_user_data)
+    print(f'query keys has added!')
+    
     # queryに合致するものを保存
     query_keys_all_df = selected_all_user_data[
         selected_all_user_data['id'].isin(list(query_df['note_id']))
