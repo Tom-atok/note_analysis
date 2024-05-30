@@ -86,7 +86,7 @@ def tokenize(text, mecab, stop_words= None):
     words = []
     while node:
         pos = node.feature.split(",")[0]
-        if pos in ["名詞", "動詞", "形容詞",'副詞','形容動詞']:
+        if pos in ["名詞", "動詞", "形容詞", "副詞", "連体詞"]:
             if (len(node.surface) > 1 or (len(node.surface) == 1 and node.feature.split(",")[1] in ["一般", "固有名詞"])) and (stop_words is None or node.surface not in stop_words):
                 words.append(node.surface)
         node = node.next
