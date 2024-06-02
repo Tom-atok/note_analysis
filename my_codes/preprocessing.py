@@ -17,6 +17,9 @@ def main(query, data_dict_path='data'):
     # 行削除
     data = remove_nan(data)
 
+    # 重複行を削除
+    data = data.drop_duplicates(subset='key')
+
     # テキストデータをクリーニングする
     data['body'] = data['body'].apply(clean_text)
 
