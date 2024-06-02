@@ -8,7 +8,6 @@ DATABASE = 'sqlite:///data/user_all_post.db'
 # Engine の作成
 Engine = create_engine(
   DATABASE,
-  encoding="utf-8",
   echo=False
 )
 Base = declarative_base()
@@ -22,4 +21,3 @@ session = Session(
 
 # modelで使用する
 Base = declarative_base()
-Base.query = session.query_property()
