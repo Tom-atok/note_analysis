@@ -26,6 +26,8 @@ def add_csv_to_database(query):
     # 新しいデータをデータベースに挿入
     insert_new_data(df, df_database, Engine)
 
+    session.close()
+
 # サブ関数
 def get_database_keys(session):
     # ORMを使って特定のカラムを取得
@@ -51,4 +53,9 @@ def insert_new_data(df, df_database, engine):
         new_df.to_sql('notes', con=engine, if_exists='append', index=False)
     else:
         print("新しいデータはありません。")
+
+########
+# query検索
+########
+
 
