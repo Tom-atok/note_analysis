@@ -13,11 +13,6 @@ Engine = create_engine(
 Base = declarative_base()
 
 # Sessionの作成
-session = Session(
-  autocommit = False,
-  autoflush = True,
-  bind = Engine
-)
 
 # modelで使用する
 Base = declarative_base()
