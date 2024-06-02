@@ -3,6 +3,7 @@ import time
 import pandas as pd
 import json
 import os
+import ast
 
 #######
 # 特定のクエリを含む記事を全取得
@@ -227,7 +228,7 @@ def select_columns(user_df):
     selected_df = user_df[select_columns]
     selected_df = selected_df.reset_index(drop=True)
 
-    user_info_dict = {key:[user_df['user'].iloc[row][key] for row in range(len(user_df))] for key in usercolumns}
+    user_info_dict = {key:[ast.literal_eval(user_df['user'].iloc[row])[key] for row in range(len(user_df))] for key in usercolumns}
     user_info_df = pd.DataFrame(user_info_dict)
     user_info_df = user_info_df.rename(columns={'key':'user_key','created_at':'user_created_at'})
     user_info_df = user_info_df.reset_index(drop=True)
