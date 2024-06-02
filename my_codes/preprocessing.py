@@ -29,7 +29,7 @@ def main(query, data_dict_path='data'):
     data = data.reset_index(drop = True)
 
     # トークン化したデータを保存
-    data.to_csv(f'{data_dict_path}/{query}_data_preprocessed.csv')
+    data.to_csv(f'{data_dict_path}/{query}/{query}_data_preprocessed.csv')
 
     return data
 
