@@ -1,5 +1,5 @@
 # note_analysis
-
+**まだまだ準備中です**
 # 前準備
 ## 仮想環境の準備
 参考：[https://packaging.python.org/ja/latest/guides/installing-using-pip-and-virtual-environments/](https://packaging.python.org/ja/latest/guides/installing-using-pip-and-virtual-environments/)
