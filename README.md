@@ -24,7 +24,7 @@ source .venv/bin/activate
 deactivate
 ```
 
-##  パッケージのインストールする
+## モジュールをインストールする
 
 ### MeCabを使用する
 そもそもPCにMeCabを入れる必要がある
@@ -66,3 +66,30 @@ dicdir =  /usr/local/lib/mecab/dic/ipadic
 ;dicdir =  /usr/local/lib/mecab/dic/ipadic
 dicdir =  /usr/local/lib/mecab/dic/mecab-ipadic-neologd
 ```
+
+### requirements.txtから読み込む
+仮想環境の活性化
+```sh
+source .venv/bin/activate
+```
+
+```sh
+pip install -r requirments.txt
+```
+読み込めなかったら，requiements.txtを目で読んで，ひとつづつインストールしてね．
+
+# データの取得
+## fetch_articles.pyのmain関数を使う
+```fetch_articles.ipynb 
+query = "検索したい語"
+
+# 自作したコードをimportする
+from my_codes import fetch_articles
+
+query_keys_all_df, selected_all_user_data = fetch_articles.main(
+    query = query, size=100, batches=10000,interval=1
+)
+```
+- ユーザー10人ごとに中間結果を保存するようにしているので，`checkpoint.csv`の設定に従って，続きから取得を再開してくれる．
+
+
