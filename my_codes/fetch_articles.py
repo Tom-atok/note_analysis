@@ -216,6 +216,7 @@ def get_all_post_per_user(data, maxpage=10000, interval=1, query='temp', start_a
             print(f"Error fetching data for user {user}. Error: {e}")
     
     # 最後の結果も保存
+
     save_checkpoint(counter, query)
     
     print('Fetching has completed!')
