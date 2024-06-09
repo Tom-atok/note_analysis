@@ -168,32 +168,34 @@ def get_user_all_notes(username:str, maxpage:int=10000, interval:int=1.0):
 #######
 # 特定のクエリを含む記事を投稿した全ユーザーの全ポストを取得する
 #######
+def save_user_data(temp_df, counter, query):
+    """各ユーザーのデータを保存する関数"""
+    user_data_path = f'data/{query}/user_posts_{str(counter)}.csv'
+    temp_df.to_csv(user_data_path, index=False)
+    print(f'User {counter} data saved at {user_data_path}')
 
-def save_checkpoint(user_df, counter, query):
+def save_checkpoint(counter, query):
     """中間結果を保存する関数"""
     checkpoint_path = f'data/{query}/checkpoint.csv'
     with open(checkpoint_path, 'w') as f:
         f.write(str(counter))
-    user_df.to_csv(f'data/{query}/temp_fetched_user_all_post_raw_{str(counter)}.csv')
     print(f'CHECK POINT {counter} st user has fetched!')
 
 def load_checkpoint(query):
-    """中間結果と再開地点を読み込む関数"""
+    """再開地点を読み込む関数"""
     checkpoint_path = f'data/{query}/checkpoint.csv'
     if os.path.exists(checkpoint_path):
         with open(checkpoint_path, 'r') as f:
             counter = int(f.read().strip())
-        user_df = pd.read_csv(f'data/{query}/temp_fetched_user_all_post_raw_{str(counter)}.csv', index_col=0)
-        return user_df, counter
-    return None, 0
+        return counter
+    return 0
 
-def get_all_post_per_user(data, maxpage=10000, interval=1,query='temp',start_at=None):
+def get_all_post_per_user(data, maxpage=10000, interval=1, query='temp', start_at=None):
     # 中間結果と再開地点を読み込む
     if start_at:
-        user_df = None
         start_counter = start_at
     else:
-        user_df, start_counter = load_checkpoint(query)
+        start_counter = load_checkpoint(query)
     
     # ユーザーURLの重複を削除する
     urlname_list = list(set(data['urlname'].tolist()))
@@ -203,23 +205,41 @@ def get_all_post_per_user(data, maxpage=10000, interval=1,query='temp',start_at=
         try:
             print(f'{counter}/{len(urlname_list)} st user start fetching')
             temp_df = get_user_all_notes(username=user, maxpage=maxpage, interval=interval)
-            if user_df is None:
-                user_df = temp_df
-            else:
-                user_df = pd.concat([user_df, temp_df], axis=0)
+            
+            # 各ユーザーのデータを保存
+            save_user_data(temp_df, counter, query)
             
             # 中間結果を保存
             if counter % 10 == 0:
-                save_checkpoint(user_df, counter,query)
+                save_checkpoint(counter, query)
                 
         except Exception as e:
             print(f"Error fetching data for user {user}. Error: {e}")
     
     # 最後の結果も保存
-    save_checkpoint(user_df, counter,query)
+    save_checkpoint(counter, query)
     
     print('Fetching has completed!')
-    return user_df
+
+def load_and_combine_user_data(query):
+    """保存されたユーザーデータをすべて読み込み、結合する関数"""
+    combined_df = pd.DataFrame()
+    data_directory = f'data/{query}/'
+    
+    # ディレクトリ内のすべてのファイルを取得
+    files = [f for f in os.listdir(data_directory) if f.startswith('user_posts_') and f.endswith('.csv')]
+    
+    # 各ファイルを読み込み、データフレームに結合
+    for file in files:
+        file_path = os.path.join(data_directory, file)
+        temp_df = pd.read_csv(file_path)
+        combined_df = pd.concat([combined_df, temp_df], axis=0, ignore_index=True)
+    
+    return combined_df
+
+#######
+
+
 
 def select_columns(user_df):
     select_columns = ['id','user_id','status','type','key','slug','name','body','created_at','can_read']
@@ -312,10 +332,15 @@ def main(query, size=50, batches = 10000, interval=1, query_keys=None):
 
     # ユーザーごとの記事を取得する
     print(f'sart fetchnig all user post')
-    all_user_data = get_all_post_per_user(data=query_df,interval=interval,query=query)
+    get_all_post_per_user(data=query_df,interval=interval,query=query)
     print(f'fetching all user post has completed!')
+    # ユーザー情報を抽出
+    all_user_data = load_and_combine_user_data(query)
+
     all_user_data.to_csv(f'data/{query}/{query}_fetched_user_all_post_raw.csv')
+    
     print(f'all user post has saved')
+
 
     # 抽出
     selected_all_user_data = select_columns(all_user_data)
