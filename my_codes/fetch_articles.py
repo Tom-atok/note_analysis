@@ -210,8 +210,7 @@ def get_all_post_per_user(data, maxpage=10000, interval=1, query='temp', start_a
             save_user_data(temp_df, counter, query)
             
             # 中間結果を保存
-            if counter % 10 == 0:
-                save_checkpoint(counter, query)
+            save_checkpoint(counter, query)
                 
         except Exception as e:
             print(f"Error fetching data for user {user}. Error: {e}")
