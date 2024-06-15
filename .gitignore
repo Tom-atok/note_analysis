@@ -48,3 +48,8 @@ logs/
 
 # Miscellaneous
 .DS_Store
+
+# images
+*.png
+*.jpg
+*.jpeg
