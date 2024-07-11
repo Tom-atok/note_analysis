@@ -232,8 +232,13 @@ def load_and_combine_user_data(query):
     # 各ファイルを読み込み、データフレームに結合
     for file in files:
         file_path = os.path.join(data_directory, file)
-        temp_df = pd.read_csv(file_path)
-        combined_df = pd.concat([combined_df, temp_df], axis=0, ignore_index=True)
+        
+        # ファイルのサイズをチェックし、サイズが大きい場合のみ読み込む
+        if os.path.getsize(file_path) > 1:
+            temp_df = pd.read_csv(file_path)
+            combined_df = pd.concat([combined_df, temp_df], axis=0, ignore_index=True)
+        else:
+            print(f"Skipped empty file: {file_path}")
     
     return combined_df
 
